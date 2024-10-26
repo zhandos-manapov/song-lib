@@ -1,0 +1,16 @@
+services:
+  postgres_db:
+    image: postgres:alpine
+    container_name: song-lib-db
+    restart: always
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    ports:
+      - '${DATABASE_PORT}:${DATABASE_PORT}'
+    volumes:
+      - song_lib_postgres_volume:/var/lib/postgresql/data
+
+volumes:
+  song_lib_postgres_volume:
