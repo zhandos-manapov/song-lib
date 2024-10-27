@@ -3,11 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/swaggo/http-swagger"
 	"log"
 	"song-lib/config"
 	"song-lib/db"
 	_ "song-lib/docs"
+
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/swaggo/http-swagger"
 )
 
 //	@title			Song Library API
@@ -22,8 +24,8 @@ import (
 //	@license.name	Apache 2.0
 //	@license.url	http://www.apache.org/licenses/LICENSE-2.0.html
 
-//	@host		localhost:3001
-//	@BasePath	/api/v1
+// @host		localhost:3001
+// @BasePath	/api/v1
 func startServer() {
 
 	context := context.Background()
@@ -46,13 +48,14 @@ func startServer() {
 	module := NewModule(context, db, env)
 
 	router := NewRouter()
-	router.LoadControllers("/api/v1", module.Controllers())
-
 	mux := router.GetMux()
+	mux.Use(middleware.Logger)
 	mux.Get("/swagger/*", httpSwagger.Handler(
 		// Visit http://localhost:3001/swagger/index.html for swagger docs
 		httpSwagger.URL(fmt.Sprintf("http://localhost:%s/swagger/doc.json", env.PORT)),
 	))
+
+	router.LoadControllers("/api/v1", module.Controllers())
 
 	log.Printf(`Server is running on port %s`, env.PORT)
 

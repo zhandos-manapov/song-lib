@@ -3,6 +3,7 @@ package song
 import (
 	"context"
 	"fmt"
+	"log"
 	"song-lib/api/song/dto"
 	"song-lib/api/song/model"
 	"song-lib/common"
@@ -60,6 +61,7 @@ func (s *store) Insert(
   SELECT song_temp.*, "group".name as group_name
   FROM song_temp
   INNER JOIN "group" ON song_temp.group_id = "group".id`
+	log.Println(query)
 
 	var song model.SongModel
 	if err := s.pool.QueryRow(
@@ -147,6 +149,7 @@ func (s *store) FindAll(pagination coredto.PaginationDto, findSongsDto dto.FindS
 
 	queryParams = append(queryParams, pagination.Limit, pagination.Skip)
 	query.WriteString(fmt.Sprintf(` LIMIT $%d OFFSET $%d`, len(queryParams)-1, len(queryParams)))
+	log.Println(query.String())
 
 	rows, err := s.pool.Query(context.Background(), query.String(), queryParams...)
 	if err != nil {
@@ -167,6 +170,8 @@ func (s *store) FindOne(id string) (*model.SongModel, error) {
 	FROM "song" 
 	INNER JOIN "group" ON "song".group_id = "group".id
 	WHERE "song".id=$1`
+	log.Println(query)
+
 	var song model.SongModel
 	if err := s.pool.QueryRow(context.Background(), query, id).Scan(
 		&song.ID,
@@ -194,6 +199,8 @@ func (s *store) UpdateOne(
   SET name=$1, release_date=$2, text=$3, link=$4
   WHERE id=$5
   RETURNING *`
+	log.Println(query)
+
 	var song model.SongModel
 	if err := s.pool.QueryRow(
 		context.Background(),
@@ -219,6 +226,7 @@ func (s *store) UpdateOne(
 func (s *store) RemoveById(id string) error {
 	query := `--sql
   DELETE FROM "song" WHERE id=$1`
+	log.Println(query)
 
 	if tag, err := s.pool.Exec(context.Background(), query, id); err != nil {
 		return err
