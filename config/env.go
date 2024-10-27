@@ -9,7 +9,8 @@ import (
 )
 
 type Config struct {
-	PORT string
+	PORT   string
+	GO_ENV string
 
 	// Database variables
 	DATABASE_USER     string
@@ -30,6 +31,7 @@ func NewEnv(filename string) Config {
 
 	return Config{
 		PORT:              getEnv("PORT"),
+		GO_ENV:            getEnv("GO_ENV"),
 		DATABASE_USER:     getEnv("DATABASE_USER"),
 		DATABASE_PASSWORD: getEnv("DATABASE_PASSWORD"),
 		DATABASE_NAME:     getEnv("DATABASE_NAME"),

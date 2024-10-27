@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"os"
+	"song-lib/common"
 	"song-lib/config"
 	"song-lib/db"
 	"song-lib/migrate/migrate"
@@ -15,10 +16,17 @@ func main() {
 	env := config.NewEnv(".env")
 	context := context.Background()
 
+	dbHost := ""
+	if env.GO_ENV == common.DEVELOPMENT {
+		dbHost = "localhost"
+	} else {
+		dbHost = env.DATABASE_HOST
+	}
+
 	dbConfig := db.DbConfig{
 		User:     env.DATABASE_USER,
 		Password: env.DATABASE_PASSWORD,
-		Host:     env.DATABASE_HOST,
+		Host:     dbHost,
 		Port:     env.DATABASE_PORT,
 		Name:     env.DATABASE_NAME,
 	}

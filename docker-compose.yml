@@ -1,4 +1,17 @@
 services:
+  song-lib:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: song-lib
+    restart: always
+    ports:
+      - '${PORT}:${PORT}'
+    env_file:
+      - .env
+    depends_on:
+      - postgres_db
+
   postgres_db:
     image: postgres:alpine
     container_name: song-lib-db

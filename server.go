@@ -3,14 +3,16 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/go-chi/chi/v5/middleware"
-	"github.com/jackc/pgx/v5/stdlib"
-	"github.com/swaggo/http-swagger"
 	"log"
+	"song-lib/common"
 	"song-lib/config"
 	"song-lib/db"
 	_ "song-lib/docs"
 	"song-lib/migrate/migrate"
+
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/jackc/pgx/v5/stdlib"
+	"github.com/swaggo/http-swagger"
 )
 
 //	@title			Song Library API
@@ -32,10 +34,17 @@ func startServer() {
 	context := context.Background()
 	env := config.NewEnv(".env")
 
+	dbHost := ""
+	if env.GO_ENV == common.DEVELOPMENT {
+		dbHost = "localhost"
+	} else {
+		dbHost = env.DATABASE_HOST
+	}
+
 	dbConfig := db.DbConfig{
 		User:     env.DATABASE_USER,
 		Password: env.DATABASE_PASSWORD,
-		Host:     env.DATABASE_HOST,
+		Host:     dbHost,
 		Port:     env.DATABASE_PORT,
 		Name:     env.DATABASE_NAME,
 	}
