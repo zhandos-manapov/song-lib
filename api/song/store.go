@@ -129,7 +129,7 @@ func (s *store) FindAll(pagination coredto.PaginationDto, findSongsDto dto.FindS
 				query.WriteString(" AND")
 			}
 			queryParams = append(queryParams, findSongsDto.GroupName)
-			query.WriteString(fmt.Sprintf(` group_name = $%d`, len(queryParams)))
+			query.WriteString(fmt.Sprintf(` "group".name = $%d`, len(queryParams)))
 		}
 
 		if findSongsDto.Search != "" {

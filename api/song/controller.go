@@ -81,7 +81,7 @@ func getFindSongsDto(r *http.Request) (*dto.FindSongsDto, error) {
 //	@Failure		400			{object}	common.apiError
 //	@Failure		404			{object}	common.apiError
 //	@Failure		500			{object}	common.apiError
-//	@Router			/songs/{id}																											[get]
+//	@Router			/songs/{id}																																			[get]
 func (c *controller) findOne(w http.ResponseWriter, r *http.Request) error {
 	id := chi.URLParam(r, "id")
 	if err := common.ValidUUID(id); err != nil {
@@ -108,12 +108,17 @@ func (c *controller) findOne(w http.ResponseWriter, r *http.Request) error {
 //	@Tags			songs
 //	@Accept			json
 //	@Produce		json
-//	@Param			skip	query		int	false	"Skips this many entries"
-//	@Param			limit	query		int	false	"Gets this many entries. If omitted, the default is 10"
-//	@Success		200		{array}		dto.SongResponseDto
-//	@Failure		400		{object}	common.apiError
-//	@Failure		500		{object}	common.apiError
-//	@Router			/songs	[get]
+//	@Param			skip		query		int		false	"Skips this many entries"
+//	@Param			limit		query		int		false	"Gets this many entries. If omitted, the default is 10"
+//	@Param			name		query		string	false	"Filter by name"
+//	@Param			groupId		query		string	false	"Filter by groupId"
+//	@Param			groupName	query		string	false	"Filter by groupName"
+//	@Param			releaseDate	query		string	false	"Filter by releaseDate"
+//	@Param			search		query		string	false	"Search songs"
+//	@Success		200			{array}		dto.SongResponseDto
+//	@Failure		400			{object}	common.apiError
+//	@Failure		500			{object}	common.apiError
+//	@Router			/songs												[get]
 func (c *controller) findAll(w http.ResponseWriter, r *http.Request) error {
 	pagination, err := getPagination(r)
 	if err != nil {
@@ -144,7 +149,7 @@ func (c *controller) findAll(w http.ResponseWriter, r *http.Request) error {
 //	@Success		200				{object}	dto.SongResponseDto
 //	@Failure		400				{object}	common.apiError
 //	@Failure		500				{object}	common.apiError
-//	@Router			/songs																																							[post]
+//	@Router			/songs																																																							[post]
 func (c *controller) create(w http.ResponseWriter, r *http.Request) error {
 	createSongDto, err := common.ParseBody(r, &dto.CreateSongDto{})
 	if err != nil {
@@ -171,7 +176,7 @@ func (c *controller) create(w http.ResponseWriter, r *http.Request) error {
 //	@Failure		400				{object}	common.apiError
 //	@Failure		404				{object}	common.apiError
 //	@Failure		500				{object}	common.apiError
-//	@Router			/songs/{id}																																[put]
+//	@Router			/songs/{id}																																												[put]
 func (c *controller) update(w http.ResponseWriter, r *http.Request) error {
 	id := chi.URLParam(r, "id")
 	if err := common.ValidUUID(id); err != nil {
@@ -202,7 +207,7 @@ func (c *controller) update(w http.ResponseWriter, r *http.Request) error {
 //	@Failure		400			{object}	common.apiError
 //	@Failure		404			{object}	common.apiError
 //	@Failure		500			{object}	common.apiError
-//	@Router			/songs/{id}																											[delete]
+//	@Router			/songs/{id}																																			[delete]
 func (c *controller) remove(w http.ResponseWriter, r *http.Request) error {
 	id := chi.URLParam(r, "id")
 	if err := common.ValidUUID(id); err != nil {

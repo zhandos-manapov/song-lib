@@ -85,6 +85,26 @@ paths:
         in: query
         name: limit
         type: integer
+      - description: Filter by name
+        in: query
+        name: name
+        type: string
+      - description: Filter by groupId
+        in: query
+        name: groupId
+        type: string
+      - description: Filter by groupName
+        in: query
+        name: groupName
+        type: string
+      - description: Filter by releaseDate
+        in: query
+        name: releaseDate
+        type: string
+      - description: Search songs
+        in: query
+        name: search
+        type: string
       produces:
       - application/json
       responses:
