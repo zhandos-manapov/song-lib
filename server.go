@@ -3,13 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/jackc/pgx/v5/stdlib"
+	"github.com/swaggo/http-swagger"
 	"log"
 	"song-lib/config"
 	"song-lib/db"
 	_ "song-lib/docs"
-
-	"github.com/go-chi/chi/v5/middleware"
-	"github.com/swaggo/http-swagger"
+	"song-lib/migrate/migrate"
 )
 
 //	@title			Song Library API
@@ -44,6 +45,11 @@ func startServer() {
 		log.Fatal(err.Error())
 	}
 	defer db.Disconnect()
+
+	sqlDb := stdlib.OpenDBFromPool(db.GetPool())
+	defer sqlDb.Close()
+
+	migrate.RunMigration(sqlDb, "up")
 
 	module := NewModule(context, db, env)
 

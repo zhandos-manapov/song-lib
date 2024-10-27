@@ -6,12 +6,9 @@ import (
 	"os"
 	"song-lib/config"
 	"song-lib/db"
+	"song-lib/migrate/migrate"
 
-	"github.com/golang-migrate/migrate/v4"
-	"github.com/golang-migrate/migrate/v4/database/pgx/v5"
 	"github.com/jackc/pgx/v5/stdlib"
-
-	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
 func main() {
@@ -27,38 +24,14 @@ func main() {
 	}
 
 	db, err := db.NewDatabase(context, dbConfig).Connect()
-  if err != nil {
-    log.Fatal(err.Error())
-  }
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 	defer db.Disconnect()
 
 	sqlDb := stdlib.OpenDBFromPool(db.GetPool())
 	defer sqlDb.Close()
 
-	driver, err := pgx.WithInstance(sqlDb, &pgx.Config{})
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-  defer driver.Close()
-
-	m, err := migrate.NewWithDatabaseInstance(
-		"file://migrate/migrations",
-		"pgx5",
-		driver,
-	)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-
 	cmd := os.Args[len(os.Args)-1]
-	if cmd == "up" {
-		if err := m.Up(); err != nil && err != migrate.ErrNoChange {
-			log.Fatal(err.Error())
-		}
-	}
-	if cmd == "down" {
-		if err := m.Down(); err != nil && err != migrate.ErrNoChange {
-			log.Fatal(err.Error())
-		}
-	}
+	migrate.RunMigration(sqlDb, cmd)
 }
