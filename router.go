@@ -10,6 +10,7 @@ import (
 type Router interface {
 	LoadControllers(prefix string, controllers []common.Controller)
 	Run(addr string) error
+	GetMux() *chi.Mux
 }
 
 type router struct {
@@ -20,6 +21,10 @@ func NewRouter() Router {
 	return &router{
 		mux: chi.NewRouter(),
 	}
+}
+
+func (r *router) GetMux() *chi.Mux {
+	return r.mux
 }
 
 func (r *router) LoadControllers(prefix string, controllers []common.Controller) {

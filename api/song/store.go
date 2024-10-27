@@ -162,7 +162,11 @@ func (s *store) FindAll(pagination coredto.PaginationDto, findSongsDto dto.FindS
 }
 
 func (s *store) FindOne(id string) (*model.SongModel, error) {
-	query := `SELECT * FROM "song" WHERE id=$1`
+	query := `
+	SELECT "song".*, "group".name as group_name 
+	FROM "song" 
+	INNER JOIN "group" ON "song".group_id = "group".id
+	WHERE "song".id=$1`
 	var song model.SongModel
 	if err := s.pool.QueryRow(context.Background(), query, id).Scan(
 		&song.ID,
@@ -171,6 +175,7 @@ func (s *store) FindOne(id string) (*model.SongModel, error) {
 		&song.Text,
 		&song.Link,
 		&song.ReleaseDate,
+		&song.GroupName,
 	); err != nil {
 		return nil, err
 	}

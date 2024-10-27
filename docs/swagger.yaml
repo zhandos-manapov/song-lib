@@ -1,0 +1,248 @@
+basePath: /api/v1
+definitions:
+  common.apiError:
+    properties:
+      code:
+        type: integer
+      details:
+        type: string
+      message:
+        type: string
+    type: object
+  common.apiResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  dto.CreateSongDto:
+    properties:
+      group:
+        type: string
+      song:
+        type: string
+    required:
+    - group
+    - song
+    type: object
+  dto.SongResponseDto:
+    properties:
+      groupId:
+        type: string
+      groupName:
+        type: string
+      id:
+        type: string
+      link:
+        type: string
+      name:
+        type: string
+      releaseDate:
+        type: string
+      text:
+        type: string
+    type: object
+  dto.UpdateSongDto:
+    properties:
+      link:
+        type: string
+      name:
+        type: string
+      releaseDate:
+        type: string
+      text:
+        type: string
+    required:
+    - link
+    - name
+    - releaseDate
+    - text
+    type: object
+host: localhost:3001
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is song library API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Song Library API
+  version: "1.0"
+paths:
+  /songs:
+    get:
+      consumes:
+      - application/json
+      description: finds all songs with pagination
+      parameters:
+      - description: Skips this many entries
+        in: query
+        name: skip
+        type: integer
+      - description: Gets this many entries. If omitted, the default is 10
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.SongResponseDto'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.apiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.apiError'
+      summary: Find All Songs
+      tags:
+      - songs
+    post:
+      consumes:
+      - application/json
+      description: creates a song
+      parameters:
+      - description: Body for creating a song
+        in: body
+        name: createSongDto
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateSongDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SongResponseDto'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.apiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.apiError'
+      summary: Create a Song
+      tags:
+      - songs
+  /songs/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: removes a song
+      parameters:
+      - description: Id of a song
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.apiResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.apiError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.apiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.apiError'
+      summary: Remove a Song
+      tags:
+      - songs
+    get:
+      consumes:
+      - application/json
+      description: finds one song with verse pagination
+      parameters:
+      - description: Id of a song
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Skips this many verses
+        in: query
+        name: skip
+        type: integer
+      - description: Gets this many verses. If omitted, the default is 10
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SongResponseDto'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.apiError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.apiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.apiError'
+      summary: Find One Song
+      tags:
+      - songs
+    put:
+      consumes:
+      - application/json
+      description: updates song details
+      parameters:
+      - description: Id of a song
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Body for updating a song
+        in: body
+        name: updateSongDto
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateSongDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SongResponseDto'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.apiError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.apiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.apiError'
+      summary: Update a Song
+      tags:
+      - songs
+swagger: "2.0"

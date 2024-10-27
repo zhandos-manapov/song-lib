@@ -12,3 +12,7 @@ migrate-up:
 
 migrate-down:
 	@go run migrate/main.go down
+
+# export PATH=$(go env GOPATH)/bin:$PATH
+swag: 
+	@swag fmt & swag init -g server.go
