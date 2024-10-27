@@ -2,4 +2,4 @@
 .DS_Store
 # .env
 song-lib.session.sql
-./bin
+bin/
